@@ -4,7 +4,275 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Item Calculator</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-page: radial-gradient(circle at top, #1f2933 0, #020617 60%);
+      --bg-shell: #f8fafc;
+      --shadow-shell: 0 20px 45px rgba(15,23,42,0.55), 0 0 0 1px rgba(15,23,42,0.3);
+      --header-gradient: linear-gradient(135deg, #1d4ed8, #4f46e5);
+      --header-subtext: #dbeafe;
+      --card-bg: #ffffff;
+      --card-border: #e2e8f0;
+      --card-shadow: 0 4px 14px rgba(148,163,184,0.15);
+      --text-main: #0f172a;
+      --text-muted: #94a3b8;
+      --text-soft: #64748b;
+      --input-bg: #ffffff;
+      --input-border: #d4d4ff;
+      --input-bg-alt: #f8fafc;
+      --pill-green-bg: #dcfce7;
+      --pill-green-text: #166534;
+      --pill-red-bg: #fee2e2;
+      --pill-red-text: #b91c1c;
+      --pill-yellow-bg: #fef9c3;
+      --pill-yellow-text: #854d0e;
+      --btn-primary-bg: #2563eb;
+      --btn-primary-hover: #1d4ed8;
+      --btn-primary-text: #eff6ff;
+      --btn-secondary-bg: #f1f5f9;
+      --btn-secondary-border: #cbd5e1;
+      --btn-secondary-hover: #e2e8f0;
+      --btn-secondary-text: #0f172a;
+      --btn-danger-bg: #fee2e2;
+      --btn-danger-border: #fecaca;
+      --btn-danger-text: #b91c1c;
+      --btn-outline-border: #cbd5e1;
+      --btn-outline-text: #334155;
+      --btn-warning-bg: #f97316;
+      --btn-warning-text: #fff7ed;
+      --btn-success-bg: #16a34a;
+      --btn-success-text: #f0fdf4;
+      --craft-bg: #eff6ff;
+      --craft-border: #dbeafe;
+      --recipe-bg: #f8fafc;
+      --recipe-border: #e2e8f0;
+      --table-hover: #fafafa;
+      --tab-active: #ffffff;
+      --tab-inactive: rgba(255,255,255,0.13);
+      --tab-inactive-text: rgba(255,255,255,0.72);
+      --toast-bg: #0f172a;
+      --toast-border: rgba(148,163,184,0.6);
+      --toast-text: #e5e7eb;
+      --divider: #e2e8f0;
+      --modal-overlay: rgba(0,0,0,0.55);
+    }
+
+    body[data-theme="dark"] {
+      --bg-page: #020617;
+      --bg-shell: #0b1020;
+      --shadow-shell: 0 24px 60px rgba(0,0,0,0.9), 0 0 0 1px rgba(15,23,42,0.9);
+      --header-gradient: radial-gradient(circle at top left, #4c1d95, #1e293b);
+      --header-subtext: #a5b4fc;
+      --card-bg: #0f172a;
+      --card-border: #1f2937;
+      --card-shadow: 0 12px 28px rgba(0,0,0,0.6);
+      --text-main: #e5e7eb;
+      --text-muted: #6b7280;
+      --text-soft: #a5b4fc;
+      --input-bg: #020617;
+      --input-border: #334155;
+      --input-bg-alt: #020617;
+      --pill-green-bg: rgba(22,163,74,0.25);
+      --pill-green-text: #4ade80;
+      --pill-red-bg: rgba(248,113,113,0.15);
+      --pill-red-text: #fca5a5;
+      --pill-yellow-bg: rgba(234,179,8,0.18);
+      --pill-yellow-text: #fde047;
+      --btn-primary-bg: #6366f1;
+      --btn-primary-hover: #4f46e5;
+      --btn-primary-text: #e5e7eb;
+      --btn-secondary-bg: #0f172a;
+      --btn-secondary-border: #334155;
+      --btn-secondary-hover: #1e293b;
+      --btn-secondary-text: #e5e7eb;
+      --btn-danger-bg: rgba(127,29,29,0.4);
+      --btn-danger-border: rgba(248,113,113,0.4);
+      --btn-danger-text: #fca5a5;
+      --btn-outline-border: #374151;
+      --btn-outline-text: #e5e7eb;
+      --btn-warning-bg: #ea580c;
+      --btn-warning-text: #ffedd5;
+      --btn-success-bg: #16a34a;
+      --btn-success-text: #dcfce7;
+      --craft-bg: rgba(79,70,229,0.15);
+      --craft-border: rgba(129,140,248,0.5);
+      --recipe-bg: #0f172a;
+      --recipe-border: #1f2937;
+      --table-hover: rgba(255,255,255,0.02);
+      --tab-active: #0f172a;
+      --tab-inactive: rgba(255,255,255,0.06);
+      --tab-inactive-text: rgba(255,255,255,0.45);
+      --toast-bg: #020617;
+      --toast-border: #374151;
+      --toast-text: #e5e7eb;
+      --divider: #1f2937;
+      --modal-overlay: rgba(0,0,0,0.75);
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg-page);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+      display: flex; justify-content: center; align-items: flex-start;
+      transition: background 0.25s, color 0.25s;
+    }
+
+    .app-shell {
+      max-width: 900px; width: 100%;
+      background: var(--bg-shell);
+      border-radius: 18px;
+      box-shadow: var(--shadow-shell);
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: background 0.25s, box-shadow 0.25s;
+    }
+
+    .app-header {
+      background: var(--header-gradient);
+      padding: 1rem 2rem 0;
+      display: flex; flex-direction: column;
+    }
+    .header-top {
+      display: flex; flex-wrap: wrap;
+      justify-content: space-between; align-items: center;
+      gap: 0.75rem; padding-bottom: 0.85rem;
+    }
+    .title-block h1 { font-size: 1.45rem; font-weight: 700; color: #e5e7eb; display: flex; align-items: center; gap: 0.4rem; }
+    .title-block small { display: block; font-size: 0.77rem; color: rgba(229,231,235,0.8); margin-top: 0.1rem; }
+    .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.3rem; }
+    .meta-block { text-align: right; font-size: 0.75rem; }
+    .header-version { display: inline-block; background: rgba(15,23,42,0.25); color: var(--header-subtext); font-size: 0.7rem; font-weight: 600; padding: 0.13rem 0.55rem; border-radius: 999px; border: 1px solid rgba(191,219,254,0.4); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.2rem; }
+    .header-author a { color: var(--header-subtext); text-decoration: none; font-weight: 500; }
+    .header-author a:hover { text-decoration: underline; }
+    .theme-toggle { padding: 0.2rem 0.65rem; border-radius: 999px; border: 1px solid rgba(255,255,255,0.35); background: rgba(15,23,42,0.3); color: #e5e7eb; font-size: 0.74rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.3rem; transition: background 0.2s, border-color 0.2s, transform 0.05s; }
+    .theme-toggle:hover { background: rgba(15,23,42,0.6); border-color: #e5e7eb; }
+    .theme-toggle:active { transform: translateY(1px); }
+
+    .tab-bar { display: flex; gap: 0.25rem; padding: 0 0.5rem; }
+    .tab-btn { padding: 0.55rem 1.5rem; border-radius: 10px 10px 0 0; border: none; cursor: pointer; font-size: 0.82rem; font-weight: 600; background: var(--tab-inactive); color: var(--tab-inactive-text); transition: background 0.15s, color 0.15s; }
+    .tab-btn.active { background: var(--tab-active); color: var(--text-main); }
+    .tab-btn:hover:not(.active) { background: rgba(255,255,255,0.2); color: #fff; }
+
+    .app-body { padding: 1.5rem 2rem 2rem; display: flex; flex-direction: column; gap: 1.1rem; }
+    .tab-panel { display: none; flex-direction: column; gap: 1.1rem; }
+    .tab-panel.active { display: flex; }
+
+    .card { background: var(--card-bg); border-radius: 14px; border: 1px solid var(--card-border); box-shadow: var(--card-shadow); padding: 1.1rem 1.4rem; transition: background 0.25s, border-color 0.25s, box-shadow 0.25s; }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; gap: 0.75rem; }
+    .card-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.11em; color: var(--text-soft); font-weight: 700; display: flex; align-items: center; gap: 0.4rem; }
+    .card-subtitle { font-size: 0.77rem; color: var(--text-muted); margin-top: 0.1rem; }
+    .card-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: flex-end; flex-shrink: 0; }
+
+    .btn { padding: 0.45rem 1rem; border-radius: 999px; border: none; cursor: pointer; font-size: 0.8rem; font-weight: 500; display: inline-flex; align-items: center; gap: 0.35rem; transition: background 0.15s, transform 0.06s, color 0.15s; white-space: nowrap; }
+    .btn:active { transform: translateY(1px); }
+    .btn-sm { padding: 0.28rem 0.7rem; font-size: 0.74rem; }
+    .btn-primary   { background: var(--btn-primary-bg);  color: var(--btn-primary-text); }
+    .btn-primary:hover { background: var(--btn-primary-hover); }
+    .btn-secondary { background: var(--btn-secondary-bg); color: var(--btn-secondary-text); border: 1px solid var(--btn-secondary-border); }
+    .btn-secondary:hover { background: var(--btn-secondary-hover); }
+    .btn-danger    { background: var(--btn-danger-bg); color: var(--btn-danger-text); border: 1px solid var(--btn-danger-border); padding: 0.22rem 0.6rem; font-size: 0.72rem; }
+    .btn-outline   { background: transparent; color: var(--btn-outline-text); border: 1px dashed var(--btn-outline-border); }
+    .btn-outline:hover { border-style: solid; background: rgba(148,163,184,0.06); }
+    .btn-warning   { background: var(--btn-warning-bg); color: var(--btn-warning-text); border: none; }
+    .btn-success   { background: var(--btn-success-bg); color: var(--btn-success-text); border: none; }
+    .btn-ghost     { background: transparent; color: var(--text-muted); border: 1px solid transparent; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 999px; }
+    .btn-ghost:hover { border-color: var(--btn-secondary-border); background: rgba(148,163,184,0.06); }
+
+    select, input[type="number"], input[type="text"], textarea {
+      background: var(--input-bg); border: 1px solid var(--input-border);
+      border-radius: 999px; padding: 0.42rem 0.8rem;
+      font-size: 0.82rem; color: var(--text-main); outline: none;
+      transition: border-color 0.14s, box-shadow 0.14s, background 0.2s, color 0.2s;
+    }
+    select:focus, input:focus, textarea:focus { border-color: #6366f1; box-shadow: 0 0 0 2px rgba(99,102,241,0.2); }
+    select { appearance: none; background-image: linear-gradient(45deg,transparent 50%,#64748b 50%),linear-gradient(135deg,#64748b 50%,transparent 50%); background-position: calc(100% - 14px) 50%, calc(100% - 9px) 50%; background-size: 5px 5px; background-repeat: no-repeat; padding-right: 2rem; }
+    textarea { border-radius: 10px; min-height: 90px; resize: vertical; font-family: ui-monospace, monospace; background: var(--input-bg-alt); width: 100%; }
+
+    .calc-row { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+    .calc-row select { flex: 1; min-width: 200px; }
+    .calc-row input[type="number"] { width: 90px; min-width: 90px; text-align: center; }
+    .craft-list { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.7rem; }
+    .craft-item { display: flex; justify-content: space-between; align-items: center; padding: 0.38rem 0.85rem; border-radius: 999px; background: var(--craft-bg); border: 1px solid var(--craft-border); font-size: 0.82rem; color: var(--text-main); gap: 0.5rem; }
+    .craft-item-left { display: flex; align-items: center; gap: 0.4rem; flex: 1; min-width: 0; }
+    .craft-item-qty  { font-weight: 700; color: var(--text-soft); white-space: nowrap; }
+    .craft-item-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .empty-state { font-size: 0.8rem; color: var(--text-muted); padding: 0.38rem 0.85rem; background: rgba(148,163,184,0.1); border-radius: 999px; display: inline-flex; align-items: center; }
+
+    .inventory-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 0.25rem; }
+    .inventory-table th { text-align: left; color: var(--text-soft); font-weight: 600; padding: 0.35rem 0.6rem; border-bottom: 1px solid var(--card-border); font-size: 0.73rem; text-transform: uppercase; letter-spacing: 0.07em; }
+    .inventory-table td { padding: 0.32rem 0.6rem; vertical-align: middle; }
+    .inventory-table tr:not(:last-child) td { border-bottom: 1px solid rgba(148,163,184,0.08); }
+    .inventory-table tr:hover td { background: var(--table-hover); }
+    .inv-item-name { font-weight: 500; color: var(--text-main); }
+    .inv-item-type { display: inline-block; font-size: 0.65rem; padding: 0.1rem 0.42rem; border-radius: 999px; margin-left: 0.35rem; font-weight: 600; }
+    .inv-item-type.base  { background: var(--pill-green-bg); color: var(--pill-green-text); }
+    .inv-item-type.inter { background: rgba(99,102,241,0.2); color: #a5b4fc; }
+    .inv-input { width: 120px; min-width: 120px; border-radius: 8px; text-align: right; padding: 0.28rem 0.6rem; border: 1px solid var(--card-border); background: var(--input-bg-alt); font-size: 0.82rem; color: var(--text-main); -moz-appearance: textfield; }
+    .inv-input::-webkit-outer-spin-button, .inv-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .inv-input:focus { border-color: #6366f1; background: var(--input-bg); box-shadow: 0 0 0 2px rgba(99,102,241,0.2); outline: none; }
+    .inv-required { font-weight: 600; color: var(--text-soft); }
+    .inv-remaining { font-weight: 700; min-width: 4rem; display: inline-block; white-space: nowrap; }
+    .inv-remaining.zero    { color: var(--pill-green-text); }
+    .inv-remaining.partial { color: #facc15; }
+    .inv-remaining.full    { color: var(--text-main); }
+
+    .summary-row { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin-bottom: 0.85rem; }
+    .summary-label { font-size: 0.8rem; color: var(--text-soft); font-weight: 600; }
+    .pill-green  { background: var(--pill-green-bg);  color: var(--pill-green-text);  font-size: 0.72rem; font-weight: 600; border-radius: 999px; padding: 0.12rem 0.6rem; }
+    .pill-red    { background: var(--pill-red-bg);    color: var(--pill-red-text);    font-size: 0.72rem; font-weight: 600; border-radius: 999px; padding: 0.12rem 0.6rem; }
+    .pill-yellow { background: var(--pill-yellow-bg); color: var(--pill-yellow-text); font-size: 0.72rem; font-weight: 600; border-radius: 999px; padding: 0.12rem 0.6rem; }
+
+    .recipe-list { display: flex; flex-direction: column; gap: 0.4rem; max-height: 320px; overflow-y: auto; padding-right: 0.2rem; margin-top: 0.5rem; }
+    .recipe-item { border-radius: 10px; border: 1px solid var(--recipe-border); background: var(--recipe-bg); padding: 0.45rem 0.7rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; font-size: 0.8rem; }
+    .recipe-item-name { font-weight: 600; color: var(--text-main); margin-bottom: 0.15rem; }
+    .recipe-item-ingr { color: var(--text-muted); font-size: 0.76rem; }
+
+    .ingredients-builder { display: flex; flex-direction: column; gap: 0.45rem; margin-top: 0.5rem; }
+    .ingredient-row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .ingredient-row input[type="number"] { width: 90px; min-width: 90px; text-align: center; }
+    .ingredient-row input[type="text"]   { flex: 1; min-width: 180px; }
+
+    .collapsible-header { cursor: pointer; }
+    .collapsible-body { overflow: hidden; transition: max-height 0.28s ease, opacity 0.28s ease, margin-top 0.28s ease; max-height: 3000px; opacity: 1; margin-top: 0.5rem; }
+    .collapsible-body.collapsed { max-height: 0; opacity: 0; margin-top: 0; }
+
+    .divider { border: none; border-top: 1px solid var(--divider); margin: 0.7rem 0; }
+    .localstorage-note { margin-top: 0.6rem; font-size: 0.76rem; color: var(--text-muted); }
+    .merge-options { display: flex; flex-wrap: wrap; gap: 0.6rem; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.5rem; align-items: center; }
+    .merge-options label { display: inline-flex; align-items: center; gap: 0.25rem; cursor: pointer; }
+    input[type="radio"] { accent-color: #6366f1; cursor: pointer; }
+    .recalc-note { font-size: 0.73rem; color: var(--text-muted); margin-top: 0.6rem; font-style: italic; }
+
+    .sprite-grid { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.7rem; }
+    .sprite-card { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; padding: 0.5rem 0.6rem; border-radius: 10px; border: 1px solid var(--card-border); background: var(--recipe-bg); font-size: 0.72rem; text-align: center; min-width: 80px; max-width: 90px; }
+    .sprite-card img { width: 40px; height: 40px; object-fit: contain; image-rendering: pixelated; }
+    .sprite-card .sprite-name { color: var(--text-main); font-weight: 600; word-break: break-word; }
+
+    .calib-canvas-wrap { position: relative; display: inline-block; margin-top: 0.7rem; max-width: 100%; overflow: auto; }
+    .calib-canvas-wrap canvas { display: block; max-width: 100%; border-radius: 8px; cursor: crosshair; border: 2px solid #6366f1; }
+
+    .preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px,1fr)); gap: 0.6rem; margin-top: 0.8rem; }
+    .preview-cell { border: 1px solid var(--card-border); border-radius: 10px; padding: 0.5rem; background: var(--recipe-bg); text-align: center; font-size: 0.72rem; }
+    .preview-cell canvas { width: 48px; height: 48px; display: block; margin: 0 auto 0.3rem; image-rendering: pixelated; }
+    .preview-cell .p-name { font-weight: 600; color: var(--text-main); margin-bottom: 0.15rem; word-break: break-word; }
+    .preview-cell .p-qty  { font-weight: 700; color: var(--text-soft); }
+    .preview-cell.unknown { border-color: #f97316; background: var(--pill-yellow-bg); }
+    .preview-cell.unknown .p-name { color: var(--pill-yellow-text); }
+    .preview-cell select { width: 100%; font-size: 0.7rem; border-radius: 6px; padding: 0.2rem 0.3rem; margin-top: 0.3rem; border-radius: 6px; }
+
+    .modal-overlay { display: none; position: fixed; inset: 0; background: var(--modal-overlay); align-items: center; justify-content: center; z-index: 500; }
+    .modal-overlay.open { display: flex; }
+    .modal-box { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--card-border); box-shadow: 0 24px 60px rgba(0,0,0,0.5); padding: 1.4rem; max-width: 700px; width: 94%; max-height: 88vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; gap: 0.5rem; }
+
+    .toast { position: fixed; bottom: 1.25rem; right: 1.25rem; background: var(--toast-bg); border-radius: 999px; padding: 0.5rem 1rem; font-size: 0.78rem; color: var(--toast-text); border: 1px solid var(--toast-border); opacity: 0; transform: translateY(8px); transition: opacity 0.25s, transform 0.25s; pointer-events: none; z-index: 999; }
+    .toast.show  { opacity: 1; transform: translateY(0); }
+    .toast.error { border-color: #f87171; color: #fca5a5; }
+  </style>
 </head>
 <body>
 <div class="app-shell">
@@ -13,33 +281,33 @@
     <div class="header-top">
       <div class="title-block">
         <h1>⚔️ Item Calculator</h1>
-        <small>Plan your farming and track ingredients.</small>
+        <small>Plan crafts, track inventory, import from screenshots.</small>
       </div>
       <div class="header-right">
         <button class="theme-toggle" onclick="toggleTheme()">
           <span id="themeIcon">🌙</span><span id="themeLabel">Dark Mode</span>
         </button>
         <div class="meta-block">
-          <div class="header-version">v 0.6</div>
+          <div class="header-version">v 0.5</div>
           <div class="header-author">Developed by Yama · <a href="mailto:yamauti@gmail.com">yamauti@gmail.com</a></div>
         </div>
       </div>
     </div>
     <nav class="tab-bar">
-      <button class="tab-btn active" id="tabBtnFarming" onclick="switchTab('farming')">🌾 Farming List</button>
+      <button class="tab-btn active" id="tabBtnPlanner" onclick="switchTab('planner')">🧮 Planner</button>
       <button class="tab-btn"        id="tabBtnSetup"   onclick="switchTab('setup')">⚙️ Setup</button>
     </nav>
   </header>
 
   <main class="app-body">
 
-    <!-- ══════ FARMING LIST TAB ══════ -->
-    <section class="tab-panel active" id="farmingTab">
+    <!-- ══════ PLANNER TAB ══════ -->
+    <section class="tab-panel active" id="plannerTab">
 
       <div class="card">
         <div class="card-header">
           <div>
-            <div class="card-title">🧾 Items to Farm</div>
+            <div class="card-title">🧾 Craft List</div>
             <div class="card-subtitle">Add items you want to craft. Persists across sessions.</div>
           </div>
           <div class="card-actions">
@@ -58,22 +326,15 @@
         <div class="card-header">
           <div>
             <div class="card-title">✅ Required Ingredients</div>
-            <div class="card-subtitle">Enter amounts in the Combined view — By Item updates live.</div>
+            <div class="card-subtitle">Inventory offsets update the full crafting tree live.</div>
           </div>
           <div class="card-actions">
-            <div class="view-toggle">
-              <button class="view-toggle-btn active" id="toggleCombined" onclick="switchResultView('combined')">Combined</button>
-              <button class="view-toggle-btn"        id="toggleByItem"   onclick="switchResultView('byitem')">By Item</button>
-            </div>
+            <button class="btn btn-ghost btn-sm" onclick="openImportModal()">📸 Screenshot Import</button>
             <button class="btn btn-ghost btn-sm" onclick="copyNeededToClipboard()">📋 Copy Needed</button>
             <button class="btn btn-ghost btn-sm" id="clearInvBtn" style="display:none;" onclick="clearInventory()">🗑 Clear Inventory</button>
           </div>
         </div>
-        <div id="resultCombined"></div>
-        <div id="resultByItem" style="display:none;">
-          <p class="by-item-disclaimer">💡 Items are prioritized in the order they appear in your "Items to Farm" list.</p>
-          <div id="byItemContent"></div>
-        </div>
+        <div id="resultContent"></div>
       </div>
 
     </section>
@@ -84,14 +345,14 @@
       <div class="card">
         <div class="card-header collapsible-header" onclick="toggleSection('recipesBody','recipesToggle')">
           <div>
-            <div class="card-title">📦 Saved Recipes</div>
+            <div class="card-title">📦 Recipes</div>
             <div class="card-subtitle">All saved crafting recipes.</div>
           </div>
           <button class="btn-ghost" id="recipesToggle">▲ Collapse</button>
         </div>
         <div class="collapsible-body" id="recipesBody">
           <div class="recipe-list" id="recipeList"><div class="empty-state">No recipes yet.</div></div>
-          <div class="localstorage-note">Recipes are stored locally in your browser.</div>
+          <div class="localstorage-note">Stored locally in your browser.</div>
         </div>
       </div>
 
@@ -147,17 +408,1552 @@
         </div>
       </div>
 
+      <div class="card">
+        <div class="card-header collapsible-header" onclick="toggleSection('spriteBody','spriteToggle')">
+          <div>
+            <div class="card-title">🖼 Sprite Library</div>
+            <div class="card-subtitle">Capture item icons directly from a screenshot for recognition.</div>
+          </div>
+          <button class="btn-ghost" id="spriteToggle">▲ Collapse</button>
+        </div>
+        <div class="collapsible-body" id="spriteBody">
+          <div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.5rem;">
+            <button class="btn btn-primary btn-sm" onclick="document.getElementById('captureScreenshot').click()">📸 Capture from Screenshot</button>
+            <input type="file" id="captureScreenshot" accept="image/*" style="display:none;" onchange="beginCaptureSprites(event)" />
+            <button class="btn btn-outline btn-sm" onclick="document.getElementById('newSpriteImg').click()">+ Add Sprite Manually</button>
+            <input type="file" id="newSpriteImg" accept="image/*" style="display:none;" onchange="beginAddSprite(event)" />
+            <button class="btn btn-success btn-sm" onclick="exportSpriteLibrary()">⬇ Export Library</button>
+            <label  class="btn btn-warning btn-sm" for="importSpriteLib">⬆ Import Library</label>
+            <input type="file" id="importSpriteLib" accept=".json,application/json" style="display:none;" onchange="importSpriteLibrary(event)" />
+          </div>
+          <div class="sprite-grid" id="spriteGrid"></div>
+          <div id="addSpriteForm" style="display:none; margin-top:0.8rem; background:var(--recipe-bg); border:1px solid var(--card-border); border-radius:10px; padding:0.8rem;">
+            <div style="display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap;">
+              <canvas id="spritePreviewCanvas" width="48" height="48" style="image-rendering:pixelated; border-radius:6px; border:1px solid var(--card-border);"></canvas>
+              <div style="flex:1; display:flex; flex-direction:column; gap:0.4rem;">
+                <label style="font-size:0.78rem; color:var(--text-muted);">Item name this sprite represents:</label>
+                <input type="text" id="spriteItemName" list="recipeNamesList" placeholder="e.g. Thorium Ore" style="border-radius:10px;" />
+                <datalist id="recipeNamesList"></datalist>
+              </div>
+            </div>
+            <div style="display:flex; gap:0.5rem; margin-top:0.6rem;">
+              <button class="btn btn-primary btn-sm" onclick="confirmAddSprite()">Save Sprite</button>
+              <button class="btn btn-outline btn-sm" onclick="cancelAddSprite()">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header collapsible-header" onclick="toggleSection('calibBody','calibToggle')">
+          <div>
+            <div class="card-title">📐 Grid Calibration</div>
+            <div class="card-subtitle">Define your inventory grid once per device/resolution.</div>
+          </div>
+          <button class="btn-ghost" id="calibToggle">▲ Collapse</button>
+        </div>
+        <div class="collapsible-body" id="calibBody">
+          <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+            <label class="btn btn-primary btn-sm" for="calibScreenshot">📁 Load Screenshot</label>
+            <input type="file" id="calibScreenshot" accept="image/*" style="display:none;" onchange="loadCalibImage(event)" />
+            <button class="btn btn-outline btn-sm" onclick="resetCalibration()">🗑 Reset</button>
+          </div>
+          <div id="calibStatus" style="font-size:0.78rem; margin-top:0.5rem;"></div>
+          <div id="calibCanvasWrap" class="calib-canvas-wrap" style="display:none;">
+            <canvas id="calibCanvas"></canvas>
+          </div>
+          <div id="calibResult" style="display:none; margin-top:0.5rem; font-size:0.8rem;"></div>
+        </div>
+      </div>
+
     </section>
   </main>
 </div>
 
+<!-- SCREENSHOT IMPORT MODAL -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <div class="card-title">📸 Import Inventory from Screenshot</div>
+        <div class="card-subtitle" style="margin-top:0.2rem;">Upload inventory screenshots — items and quantities are detected automatically.</div>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="closeImportModal()">✖ Close</button>
+    </div>
+    <div style="margin-bottom:0.7rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
+      <label class="btn btn-primary btn-sm" for="screenshotInput">📁 Choose Screenshot(s)</label>
+      <input type="file" id="screenshotInput" accept="image/*" multiple style="display:none;" onchange="processScreenshots(event)" />
+      <!-- DEBUG BUTTON START — comment out after testing -->
+      <button class="btn btn-outline btn-sm" onclick="debugCrop()">🔍 Debug First Slot</button>
+      <!-- DEBUG BUTTON END -->
+    </div>
+    <div id="previewContainer"></div>
+    <div style="display:flex; gap:0.5rem; margin-top:1rem;">
+      <button class="btn btn-success btn-sm" id="applyInvBtn" style="display:none;" onclick="applyDetectedInventory()">✅ Apply to Inventory</button>
+      <button class="btn btn-outline btn-sm" onclick="closeImportModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
-<script src="js/storage.js"></script>
-<script src="js/recipes.js"></script>
-<script src="js/calc.js"></script>
-<script src="js/inventory.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/main.js"></script>
+<script>
+// ═══════════════════════════════════════════════════
+// PART 1 — theme / storage / state / init / tabs /
+//           craft list / calculation engine
+// ═══════════════════════════════════════════════════
+
+// ── THEME ────────────────────────────────────────
+var THEME_KEY = 'ic-theme';
+function applyTheme(t) {
+  document.body.setAttribute('data-theme', t);
+  document.getElementById('themeIcon').textContent  = t === 'dark' ? '☀️' : '🌙';
+  document.getElementById('themeLabel').textContent = t === 'dark' ? 'Light Mode' : 'Dark Mode';
+}
+function toggleTheme() {
+  var next = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  try { localStorage.setItem(THEME_KEY, next); } catch(e) {}
+}
+
+// ── STORAGE ──────────────────────────────────────
+var LS_RECIPES = 'ic-recipes-v1';
+var LS_CRAFT   = 'ic-craft-v1';
+var LS_INVENT  = 'ic-invent-v1';
+var LS_SPRITES = 'ic-sprites-v1';
+var LS_CALIB   = 'ic-calib-v1';
+
+function saveLS(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} }
+function loadLS(key) {
+  try { var r = localStorage.getItem(key); return r ? JSON.parse(r) : null; } catch(e) { return null; }
+}
+
+// ── GLOBAL STATE ─────────────────────────────────
+var recipes     = {};
+var craftList   = [];
+var inventory   = {};
+var sprites     = {};
+var calibration = null;
+
+var _pendingSpriteDataURL = null;
+var _detectedInventory    = {};
+var _calibClicks          = [];
+var _calibScale           = 1;
+var _recalcTimer          = null;
+var _invTimer             = null;
+var _lastScreenshotImg = null;
+
+// ── UTILITIES ────────────────────────────────────
+function toTitleCase(s) {
+  return s.replace(/\w\S*/g, function(w) {
+    return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+  });
+}
+function normalizeRecipes(raw) {
+  var out = {};
+  for (var k in raw) {
+    var v = raw[k];
+    out[toTitleCase(k)] = {
+      yields: v.yields,
+      ingredients: v.ingredients.map(function(i) {
+        return { name: toTitleCase(i.name), qty: i.qty };
+      })
+    };
+  }
+  return out;
+}
+function showToast(msg, isError) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (isError ? ' error' : '');
+  clearTimeout(el._t);
+  el._t = setTimeout(function() { el.className = 'toast'; }, 2800);
+}
+
+// ── DEFAULT RECIPES ──────────────────────────────
+var defaultRecipesRaw = {
+  "Perfect Fur":           { yields: 5, ingredients: [{ name: "Furry Fur", qty: 30 }] },
+  "Perfect Norse Essence": { yields: 1, ingredients: [{ name: "Norse Essence", qty: 30 }] },
+  "Artisan's Frame":       { yields: 1, ingredients: [{ name: "Steel Bar", qty: 10 }, { name: "Chadcoal", qty: 100 }, { name: "Helmet Helmet", qty: 5000 }] },
+  "Furstring":             { yields: 1, ingredients: [{ name: "Perfect Fur", qty: 25 }, { name: "Yellow Feather", qty: 100 }, { name: "Nut", qty: 5000 }] },
+  "Cryolite":              { yields: 1, ingredients: [{ name: "Cryolite Ore", qty: 15 }, { name: "Norse Essence", qty: 5 }, { name: "Carrot", qty: 5000 }] },
+  "Repair Stone 2":        { yields: 1, ingredients: [{ name: "Thorium Bar", qty: 100 }] },
+  "Thorium Boots":         { yields: 1, ingredients: [{ name: "Crystalized Yellow Substance", qty: 10 }, { name: "Perfect Fur", qty: 25 }, { name: "Norse Essence", qty: 2 }, { name: "Thorium Bar", qty: 47 }] },
+  "Thorium Chestplate":    { yields: 1, ingredients: [{ name: "Crystalized Yellow Substance", qty: 63 }, { name: "Perfect Fur", qty: 80 }, { name: "Norse Essence", qty: 2 }, { name: "Thorium Bar", qty: 108 }] },
+  "Thorium Gloves":        { yields: 1, ingredients: [{ name: "Crystalized Yellow Substance", qty: 10 }, { name: "Perfect Fur", qty: 25 }, { name: "Norse Essence", qty: 2 }, { name: "Thorium Bar", qty: 47 }] },
+  "Thorium Helmet":        { yields: 1, ingredients: [{ name: "Crystalized Yellow Substance", qty: 19 }, { name: "Perfect Fur", qty: 40 }, { name: "Norse Essence", qty: 2 }, { name: "Thorium Bar", qty: 62 }] },
+  "Thorium Pickaxe":       { yields: 1, ingredients: [{ name: "Crystalized Yellow Substance", qty: 40 }, { name: "Norse Essence", qty: 5 }, { name: "Thorium Bar", qty: 30 }, { name: "Jotunn Eye", qty: 10 }] },
+  "Thorium Axe":           { yields: 1, ingredients: [{ name: "Crystalized Yellow Substance", qty: 40 }, { name: "Norse Essence", qty: 5 }, { name: "Thorium Bar", qty: 30 }, { name: "Mammoth Bitusk", qty: 10 }] },
+  "Thorium Sword":         { yields: 1, ingredients: [{ name: "Crystalized Yellow Substance", qty: 140 }, { name: "Artisan's Frame", qty: 7 }, { name: "Perfect Norse Essence", qty: 2 }, { name: "Thorium Bar", qty: 98 }] },
+  "Thorium Longsword":     { yields: 1, ingredients: [{ name: "Crystalized Yellow Substance", qty: 140 }, { name: "Artisan's Frame", qty: 7 }, { name: "Perfect Norse Essence", qty: 2 }, { name: "Thorium Bar", qty: 98 }] },
+  "Thorium Bow":           { yields: 1, ingredients: [{ name: "Crystalized Yellow Substance", qty: 140 }, { name: "Furstring", qty: 7 }, { name: "Perfect Norse Essence", qty: 2 }, { name: "Thorium Bar", qty: 98 }] },
+  "Thorium Staff":         { yields: 1, ingredients: [{ name: "Crystalized Yellow Substance", qty: 140 }, { name: "Cryolite", qty: 3 }, { name: "Perfect Norse Essence", qty: 2 }, { name: "Thorium Bar", qty: 98 }] },
+  "Copper Bar":            { yields: 1, ingredients: [{ name: "Copper Ore", qty: 2 }] },
+  "Tin Bar":               { yields: 1, ingredients: [{ name: "Tin Ore", qty: 3 }] },
+  "Bronze Bar":            { yields: 1, ingredients: [{ name: "Copper Bar", qty: 2 }, { name: "Tin Bar", qty: 1 }] },
+  "Iron Bar":              { yields: 1, ingredients: [{ name: "Iron Ore", qty: 5 }, { name: "Ash Log", qty: 8 }] },
+  "Charcoal":              { yields: 1, ingredients: [{ name: "Pyrewood Log", qty: 10 }] },
+  "Steel Bar":             { yields: 1, ingredients: [{ name: "Iron Bar", qty: 3 }, { name: "Charcoal", qty: 1 }] },
+  "Chadcoal":              { yields: 1, ingredients: [{ name: "Ironwood Log", qty: 10 }] },
+  "Thorium Bar":           { yields: 1, ingredients: [{ name: "Thorium Ore", qty: 42 }, { name: "Chadcoal", qty: 30 }] },
+  "Palm Face":             { yields: 1, ingredients: [{ name: "Palm Tree Log", qty: 50 }] },
+  "Sunstone Bar":          { yields: 1, ingredients: [{ name: "Sunstone Ore", qty: 480 }, { name: "Palm Face", qty: 56 }] }
+};
+
+// ── INIT ─────────────────────────────────────────
+(function init() {
+  var t = 'light';
+  try { t = localStorage.getItem(THEME_KEY) || 'light'; } catch(e) {}
+  applyTheme(t);
+
+  var storedR = loadLS(LS_RECIPES);
+  recipes = (storedR && Object.keys(storedR).length) ? storedR : normalizeRecipes(defaultRecipesRaw);
+  if (!loadLS(LS_RECIPES)) saveLS(LS_RECIPES, recipes);
+
+  craftList   = loadLS(LS_CRAFT)   || [];
+  inventory   = loadLS(LS_INVENT)  || {};
+  sprites     = loadLS(LS_SPRITES) || {};
+  calibration = loadLS(LS_CALIB)   || null;
+
+  renderRecipeList();
+  updateItemSelect();
+  renderCraftList();
+  renderSpriteGrid();
+  updateCalibStatus();
+  liveRecalc();
+})();
+
+// ── TAB SWITCHING ────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById(name + 'Tab').classList.add('active');
+  document.getElementById('tabBtn' + name.charAt(0).toUpperCase() + name.slice(1)).classList.add('active');
+}
+
+// ── COLLAPSIBLE ──────────────────────────────────
+function toggleSection(bodyId, toggleId) {
+  var body = document.getElementById(bodyId);
+  var tog  = document.getElementById(toggleId);
+  var col  = body.classList.toggle('collapsed');
+  tog.textContent = col ? '▼ Expand' : '▲ Collapse';
+}
+
+// ── CRAFT LIST ───────────────────────────────────
+function addToCraftList() {
+  var item = document.getElementById('craftItemSelect').value;
+  var qty  = parseInt(document.getElementById('craftQty').value) || 1;
+  if (!item) { showToast('Select an item first.', true); return; }
+  var ex = null;
+  for (var i = 0; i < craftList.length; i++) { if (craftList[i].item === item) { ex = craftList[i]; break; } }
+  if (ex) ex.qty += qty; else craftList.push({ item: item, qty: qty });
+  saveLS(LS_CRAFT, craftList);
+  renderCraftList();
+  liveRecalc();
+}
+
+function removeFromCraftList(i) {
+  craftList.splice(i, 1);
+  saveLS(LS_CRAFT, craftList);
+  renderCraftList();
+  liveRecalc();
+}
+
+function clearCraftList() {
+  if (!craftList.length) return;
+  if (!confirm('Clear the entire craft list?')) return;
+  craftList = [];
+  saveLS(LS_CRAFT, craftList);
+  renderCraftList();
+  liveRecalc();
+}
+
+function renderCraftList() {
+  var el = document.getElementById('craftList');
+  if (!craftList.length) {
+    el.innerHTML = '<div class="empty-state">No items yet — add something above.</div>';
+    return;
+  }
+  el.innerHTML = craftList.map(function(c, i) {
+    return '<div class="craft-item">' +
+      '<div class="craft-item-left">' +
+        '<span class="craft-item-qty">' + c.qty + '×</span>' +
+        '<span class="craft-item-name">' + c.item + '</span>' +
+      '</div>' +
+      '<button class="btn btn-danger" onclick="removeFromCraftList(' + i + ')">✕</button>' +
+    '</div>';
+  }).join('');
+}
+
+// ── ITEM SELECT ──────────────────────────────────
+function updateItemSelect() {
+  var sel   = document.getElementById('craftItemSelect');
+  var cur   = sel.value;
+  var names = Object.keys(recipes).sort();
+  sel.innerHTML = '<option value="">— Select An Item —</option>' +
+    names.map(function(n) {
+      return '<option value="' + n + '"' + (n === cur ? ' selected' : '') + '>' + n + '</option>';
+    }).join('');
+  var dl = document.getElementById('recipeNamesList');
+  if (dl) dl.innerHTML = names.map(function(n) { return '<option value="' + n + '">'; }).join('');
+}
+
+// ── CALCULATION ENGINE ───────────────────────────
+function expand(itemName, qty, baseAcc, interAcc, stack) {
+  if (!stack) stack = {};
+  var recipe = recipes[itemName];
+  if (!recipe) { baseAcc[itemName] = (baseAcc[itemName] || 0) + qty; return; }
+  if (stack[itemName]) { baseAcc[itemName] = (baseAcc[itemName] || 0) + qty; return; }
+  var times = Math.ceil(qty / recipe.yields);
+  if (Object.keys(stack).length > 0) interAcc[itemName] = (interAcc[itemName] || 0) + times * recipe.yields;
+  var ns = {};
+  for (var k in stack) ns[k] = true;
+  ns[itemName] = true;
+  for (var j = 0; j < recipe.ingredients.length; j++) {
+    var ingr = recipe.ingredients[j];
+    expand(ingr.name, ingr.qty * times, baseAcc, interAcc, ns);
+  }
+}
+
+function rawCalc() {
+  var base = {}, inter = {};
+  for (var i = 0; i < craftList.length; i++) expand(craftList[i].item, craftList[i].qty, base, inter, {});
+  return { base: base, inter: inter };
+}
+
+function expandNet(itemName, qty, baseAcc, interAcc, inv, stack) {
+  if (!stack) stack = {};
+  var have    = inv[itemName] || 0;
+  var consume = Math.min(have, qty);
+  inv[itemName] = have - consume;
+  var needed = qty - consume;
+  if (needed <= 0) return;
+  var recipe = recipes[itemName];
+  if (!recipe) { baseAcc[itemName] = (baseAcc[itemName] || 0) + needed; return; }
+  if (stack[itemName]) { baseAcc[itemName] = (baseAcc[itemName] || 0) + needed; return; }
+  var times = Math.ceil(needed / recipe.yields);
+  if (Object.keys(stack).length > 0) interAcc[itemName] = (interAcc[itemName] || 0) + times * recipe.yields;
+  var ns = {};
+  for (var k in stack) ns[k] = true;
+  ns[itemName] = true;
+  for (var j = 0; j < recipe.ingredients.length; j++) {
+    var ingr = recipe.ingredients[j];
+    expandNet(ingr.name, ingr.qty * times, baseAcc, interAcc, inv, ns);
+  }
+}
+
+function netCalc() {
+  var base = {}, inter = {}, inv = {};
+  for (var k in inventory) inv[k] = inventory[k];
+  for (var i = 0; i < craftList.length; i++) expandNet(craftList[i].item, craftList[i].qty, base, inter, inv, {});
+  return { base: base, inter: inter };
+}
+
+// ═══════════════════════════════════════════════════
+// ← END OF PART 1 — paste Part 2 directly below
+// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
+// PART 2 — render / inventory / recipes / import /
+//           export / clipboard / sprite library /
+//           calibration
+// ═══════════════════════════════════════════════════
+
+// ── LIVE RECALC ──────────────────────────────────
+function liveRecalc() {
+  clearTimeout(_recalcTimer);
+  _recalcTimer = setTimeout(_doRender, 80);
+}
+
+function _doRender() {
+  var card = document.getElementById('resultCard');
+  if (!craftList.length) { card.style.display = 'none'; return; }
+  card.style.display = 'block';
+
+  var raw     = rawCalc();
+  var net     = netCalc();
+  var rawBase = raw.base, rawInter = raw.inter;
+  var netBase = net.base, netInter = net.inter;
+
+  var allEntries = [];
+  var k;
+  for (k in rawBase)  allEntries.push({ name: k, raw: rawBase[k],  type: 'base'  });
+  for (k in rawInter) allEntries.push({ name: k, raw: rawInter[k], type: 'inter' });
+  allEntries.sort(function(a,b) { return b.raw - a.raw; });
+
+  var total = allEntries.length;
+  var satisfied = 0;
+  for (var i = 0; i < allEntries.length; i++) {
+    var e = allEntries[i];
+    var netAcc = e.type === 'base' ? netBase : netInter;
+    if ((netAcc[e.name] || 0) <= 0) satisfied++;
+  }
+  var hasAny = false;
+  for (k in inventory) { if (inventory[k] > 0) { hasAny = true; break; } }
+
+  var html = '<div class="summary-row">' +
+    '<span class="summary-label">' + total + ' ingredient(s)</span>' +
+    (satisfied > 0 ? '<span class="pill-green">✓ ' + satisfied + ' covered</span>' : '') +
+    '<span class="pill-red">' + (total - satisfied) + ' still needed</span>' +
+    '</div>' +
+    '<table class="inventory-table"><thead><tr>' +
+    '<th>Item</th>' +
+    '<th style="text-align:right;">Required</th>' +
+    '<th style="text-align:right;">You Have</th>' +
+    '<th style="text-align:right;">Still Need</th>' +
+    '</tr></thead><tbody>';
+
+  for (var i = 0; i < allEntries.length; i++) {
+    var e       = allEntries[i];
+    var netAcc  = e.type === 'base' ? netBase : netInter;
+    var remain  = Math.max(0, netAcc[e.name] || 0);
+    var have    = inventory[e.name] || 0;
+    var remCls  = remain === 0 ? 'zero' : have > 0 ? 'partial' : 'full';
+    var typeLbl = e.type === 'base'
+      ? '<span class="inv-item-type base">base</span>'
+      : '<span class="inv-item-type inter">craft</span>';
+    var safe = e.name.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    html +=
+      '<tr>' +
+        '<td><span class="inv-item-name">' + e.name + '</span>' + typeLbl + '</td>' +
+        '<td style="text-align:right;"><span class="inv-required">' + e.raw.toLocaleString() + '</span></td>' +
+        '<td style="text-align:right;">' +
+          '<input type="number" class="inv-input" min="0"' +
+          ' value="' + (have || '') + '" placeholder="0"' +
+          ' oninput="onInventoryInput(\'' + safe + '\', this)" />' +
+        '</td>' +
+        '<td style="text-align:right;">' +
+          '<span class="inv-remaining ' + remCls + '"' +
+          ' data-still-name="' + e.name + '"' +
+          ' data-still-type="' + e.type + '">' +
+          (remain === 0 ? '✓ Done' : remain.toLocaleString()) +
+          '</span>' +
+        '</td>' +
+      '</tr>';
+  }
+
+  html += '</tbody></table>' +
+    '<p class="recalc-note">💡 Inventory persists across sessions and recalculates the full crafting tree live.</p>';
+
+  document.getElementById('resultContent').innerHTML = html;
+  document.getElementById('clearInvBtn').style.display = hasAny ? 'inline-flex' : 'none';
+}
+
+function _patchNetCells() {
+  if (!craftList.length) return;
+  var net     = netCalc();
+  var netBase = net.base, netInter = net.inter;
+
+  var cells = document.querySelectorAll('[data-still-name]');
+  for (var i = 0; i < cells.length; i++) {
+    var cell    = cells[i];
+    var name    = cell.getAttribute('data-still-name');
+    var type    = cell.getAttribute('data-still-type');
+    var netAcc  = type === 'base' ? netBase : netInter;
+    var remain  = Math.max(0, netAcc[name] || 0);
+    var have    = inventory[name] || 0;
+    cell.className   = 'inv-remaining ' + (remain === 0 ? 'zero' : have > 0 ? 'partial' : 'full');
+    cell.textContent = remain === 0 ? '✓ Done' : remain.toLocaleString();
+  }
+
+  var raw     = rawCalc();
+  var allRaw  = {};
+  var allNet  = {};
+  var k;
+  for (k in raw.base)  allRaw[k] = raw.base[k];
+  for (k in raw.inter) allRaw[k] = raw.inter[k];
+  for (k in netBase)   allNet[k] = netBase[k];
+  for (k in netInter)  allNet[k] = netInter[k];
+
+  var total     = Object.keys(allRaw).length;
+  var satisfied = 0;
+  for (k in allRaw) { if ((allNet[k] || 0) <= 0) satisfied++; }
+
+  var row = document.querySelector('.summary-row');
+  if (row) {
+    row.innerHTML =
+      '<span class="summary-label">' + total + ' ingredient(s)</span>' +
+      (satisfied > 0 ? '<span class="pill-green">✓ ' + satisfied + ' covered</span>' : '') +
+      '<span class="pill-red">' + (total - satisfied) + ' still needed</span>';
+  }
+
+  var hasAny = false;
+  for (k in inventory) { if (inventory[k] > 0) { hasAny = true; break; } }
+  document.getElementById('clearInvBtn').style.display = hasAny ? 'inline-flex' : 'none';
+}
+
+// ── INVENTORY INPUT ──────────────────────────────
+function onInventoryInput(name, input) {
+  var val = parseInt(input.value) || 0;
+  if (val <= 0) delete inventory[name]; else inventory[name] = val;
+  saveLS(LS_INVENT, inventory);
+  clearTimeout(_invTimer);
+  _invTimer = setTimeout(_patchNetCells, 80);
+}
+
+function clearInventory() {
+  if (!confirm('Clear all inventory entries?')) return;
+  inventory = {};
+  saveLS(LS_INVENT, inventory);
+  var inputs = document.querySelectorAll('.inv-input');
+  for (var i = 0; i < inputs.length; i++) inputs[i].value = '';
+  _patchNetCells();
+  showToast('Inventory cleared.');
+}
+
+// ── RECIPES ──────────────────────────────────────
+function renderRecipeList() {
+  var list  = document.getElementById('recipeList');
+  var names = Object.keys(recipes).sort();
+  if (!names.length) { list.innerHTML = '<div class="empty-state">No recipes yet.</div>'; return; }
+  list.innerHTML = names.map(function(name) {
+    var r      = recipes[name];
+    var ingStr = r.ingredients.map(function(i) { return i.qty + '× ' + i.name; }).join(', ');
+    var yNote  = r.yields > 1 ? ' <span style="color:var(--text-muted)">(yields ' + r.yields + ')</span>' : '';
+    var safe   = name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    return '<div class="recipe-item">' +
+      '<div>' +
+        '<div class="recipe-item-name">' + name + yNote + '</div>' +
+        '<div class="recipe-item-ingr">' + ingStr + '</div>' +
+      '</div>' +
+      '<button class="btn btn-danger" onclick="deleteRecipe(\'' + safe + '\')">✕</button>' +
+    '</div>';
+  }).join('');
+}
+
+function addIngredientRow() {
+  var b   = document.getElementById('ingredientsBuilder');
+  var row = document.createElement('div');
+  row.className = 'ingredient-row';
+  row.innerHTML =
+    '<input type="number" class="ingr-qty" min="1" placeholder="Qty" />' +
+    '<input type="text" class="ingr-name" placeholder="Ingredient" />' +
+    '<button class="btn btn-danger" onclick="removeIngredientRow(this)">✕</button>';
+  b.appendChild(row);
+}
+
+function removeIngredientRow(btn) {
+  var b = document.getElementById('ingredientsBuilder');
+  if (b.children.length > 1) btn.parentElement.remove();
+}
+
+function saveRecipe() {
+  var name   = toTitleCase(document.getElementById('recipeName').value.trim());
+  var yields = parseInt(document.getElementById('recipeYields').value) || 1;
+  var errEl  = document.getElementById('recipeError');
+  if (!name) { errEl.textContent = 'Please enter an item name.'; return; }
+
+  var rows        = document.querySelectorAll('#ingredientsBuilder .ingredient-row');
+  var ingredients = [];
+  for (var i = 0; i < rows.length; i++) {
+    var qty     = parseInt(rows[i].querySelector('.ingr-qty').value);
+    var ingName = toTitleCase(rows[i].querySelector('.ingr-name').value.trim());
+    if (!ingName || !qty || qty < 1) { errEl.textContent = 'Fill in all ingredient fields.'; return; }
+    ingredients.push({ name: ingName, qty: qty });
+  }
+  if (!ingredients.length) { errEl.textContent = 'Add at least one ingredient.'; return; }
+  for (var i = 0; i < ingredients.length; i++) {
+    if (ingredients[i].name === name) { errEl.textContent = 'An item cannot contain itself.'; return; }
+  }
+
+  errEl.textContent = '';
+  var isNew = !recipes[name];
+  recipes[name] = { yields: yields, ingredients: ingredients };
+  saveLS(LS_RECIPES, recipes);
+
+  document.getElementById('recipeName').value   = '';
+  document.getElementById('recipeYields').value = '1';
+  document.getElementById('ingredientsBuilder').innerHTML =
+    '<div class="ingredient-row">' +
+      '<input type="number" class="ingr-qty" min="1" placeholder="Qty" />' +
+      '<input type="text" class="ingr-name" placeholder="Ingredient" />' +
+      '<button class="btn btn-danger" onclick="removeIngredientRow(this)">✕</button>' +
+    '</div>';
+
+  renderRecipeList();
+  updateItemSelect();
+  liveRecalc();
+  showToast('Recipe "' + name + '" ' + (isNew ? 'saved' : 'updated') + '!');
+}
+
+function deleteRecipe(name) {
+  if (!confirm('Delete recipe for "' + name + '"?')) return;
+  delete recipes[name];
+  saveLS(LS_RECIPES, recipes);
+  renderRecipeList();
+  updateItemSelect();
+  liveRecalc();
+  showToast('Recipe "' + name + '" deleted.');
+}
+
+function restoreDefaults() {
+  if (!confirm('Remove all custom recipes and restore the default set?')) return;
+  recipes = normalizeRecipes(defaultRecipesRaw);
+  saveLS(LS_RECIPES, recipes);
+  renderRecipeList();
+  updateItemSelect();
+  liveRecalc();
+  showToast('Default recipes restored.');
+}
+
+// ── IMPORT / EXPORT RECIPES ──────────────────────
+function exportRecipes() {
+  if (!Object.keys(recipes).length) { showToast('No recipes to export.', true); return; }
+  _downloadJSON(recipes, 'recipes.json');
+  showToast('Recipes exported.');
+}
+
+function handleImportFile(e) {
+  var file = e.target.files[0]; if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) { processImport(ev.target.result); e.target.value = ''; };
+  reader.readAsText(file);
+}
+
+function importFromPaste() {
+  var raw = document.getElementById('jsonPasteArea').value.trim();
+  if (!raw) { showToast('Paste area is empty.', true); return; }
+  processImport(raw);
+}
+
+function processImport(raw) {
+  var parsed;
+  try { parsed = JSON.parse(raw); } catch(ex) { showToast('Invalid JSON.', true); return; }
+  if (typeof parsed !== 'object' || Array.isArray(parsed)) { showToast('JSON must be an object.', true); return; }
+
+  var errors = [];
+  for (var n in parsed) {
+    var r = parsed[n];
+    if (typeof r.yields !== 'number' || r.yields < 1) { errors.push('"' + n + '": bad yields'); continue; }
+    if (!Array.isArray(r.ingredients) || !r.ingredients.length) { errors.push('"' + n + '": empty ingredients'); continue; }
+    for (var i = 0; i < r.ingredients.length; i++) {
+      var ingr = r.ingredients[i];
+      if (typeof ingr.name !== 'string' || typeof ingr.qty !== 'number' || ingr.qty < 1)
+        errors.push('"' + n + '": bad ingredient');
+    }
+  }
+  if (errors.length) { showToast('Import failed — see console.', true); console.error(errors); return; }
+
+  var norm = normalizeRecipes(parsed);
+  var mode = document.querySelector('input[name="importMode"]:checked').value;
+  if (mode === 'replace') {
+    recipes = norm;
+  } else {
+    for (var k in norm) recipes[k] = norm[k];
+  }
+  saveLS(LS_RECIPES, recipes);
+  renderRecipeList();
+  updateItemSelect();
+  liveRecalc();
+  showToast(Object.keys(parsed).length + ' recipe(s) imported (' + (mode === 'replace' ? 'replaced all' : 'merged') + ').');
+}
+
+// ── CLIPBOARD ────────────────────────────────────
+function copyNeededToClipboard() {
+  if (!craftList.length) { showToast('Nothing to copy yet.', true); return; }
+  var net        = netCalc();
+  var baseLines  = [], interLines = [], k;
+  for (k in net.base)  { if (net.base[k]  > 0) baseLines.push(net.base[k].toLocaleString()  + 'x ' + k); }
+  for (k in net.inter) { if (net.inter[k] > 0) interLines.push(net.inter[k].toLocaleString() + 'x ' + k); }
+  baseLines.sort();  interLines.sort();
+  if (!baseLines.length && !interLines.length) { showToast('You already have everything!'); return; }
+  var text = '';
+  if (baseLines.length)  text += 'Base Ingredients Needed:\n' + baseLines.join('\n');
+  if (interLines.length) text += (text ? '\n\n' : '') + 'Intermediate Items To Craft:\n' + interLines.join('\n');
+  try {
+    navigator.clipboard.writeText(text.trim()).then(function() {
+      showToast('Copied to clipboard!');
+    });
+  } catch(ex) { showToast('Could not access clipboard.', true); }
+}
+
+// ── SPRITE LIBRARY ───────────────────────────────
+function beginAddSprite(e) {
+  var file = e.target.files[0]; if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    _pendingSpriteDataURL = ev.target.result;
+    var canvas = document.getElementById('spritePreviewCanvas');
+    var ctx    = canvas.getContext('2d');
+    var img    = new Image();
+    img.onload = function() { ctx.clearRect(0,0,48,48); ctx.drawImage(img,0,0,48,48); };
+    img.src = _pendingSpriteDataURL;
+    document.getElementById('addSpriteForm').style.display = 'block';
+    document.getElementById('spriteItemName').value = '';
+    document.getElementById('spriteItemName').focus();
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+}
+
+function confirmAddSprite() {
+  var name = toTitleCase(document.getElementById('spriteItemName').value.trim());
+  if (!name)                  { showToast('Please enter an item name.', true); return; }
+  if (!_pendingSpriteDataURL) { showToast('No image loaded.', true); return; }
+  var canvas = document.createElement('canvas');
+  canvas.width = canvas.height = 48;
+  var ctx = canvas.getContext('2d');
+  var img = new Image();
+  img.onload = function() {
+    ctx.drawImage(img, 0, 0, 48, 48);
+    sprites[name] = canvas.toDataURL('image/png');
+    saveLS(LS_SPRITES, sprites);
+    renderSpriteGrid();
+    cancelAddSprite();
+    showToast('Sprite for "' + name + '" saved.');
+  };
+  img.src = _pendingSpriteDataURL;
+}
+
+function cancelAddSprite() {
+  _pendingSpriteDataURL = null;
+  document.getElementById('addSpriteForm').style.display = 'none';
+  document.getElementById('spriteItemName').value = '';
+}
+
+function deleteSprite(name) {
+  delete sprites[name];
+  saveLS(LS_SPRITES, sprites);
+  renderSpriteGrid();
+  showToast('Sprite for "' + name + '" removed.');
+}
+
+function renderSpriteGrid() {
+  var grid  = document.getElementById('spriteGrid');
+  var names = Object.keys(sprites).sort();
+  if (!names.length) {
+    grid.innerHTML = '<div class="empty-state">No sprites yet. Capture from a screenshot above.</div>';
+    return;
+  }
+  grid.innerHTML = names.map(function(name) {
+    var safe = name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    return '<div class="sprite-card">' +
+      '<img src="' + sprites[name] + '" alt="' + name + '" />' +
+      '<div class="sprite-name">' + name + '</div>' +
+      '<button class="btn btn-danger" onclick="deleteSprite(\'' + safe + '\')">✕</button>' +
+    '</div>';
+  }).join('');
+}
+
+function exportSpriteLibrary() {
+  if (!Object.keys(sprites).length) { showToast('No sprites to export.', true); return; }
+  _downloadJSON(sprites, 'sprite-library.json');
+  showToast('Sprite library exported.');
+}
+
+function importSpriteLibrary(e) {
+  var file = e.target.files[0]; if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      var parsed = JSON.parse(ev.target.result);
+      if (typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error();
+      for (var k in parsed) sprites[k] = parsed[k];
+      saveLS(LS_SPRITES, sprites);
+      renderSpriteGrid();
+      showToast(Object.keys(parsed).length + ' sprite(s) imported.');
+    } catch(ex) { showToast('Invalid sprite library file.', true); }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+// ── CALIBRATION ──────────────────────────────────
+function loadCalibImage(e) {
+  var file = e.target.files[0]; if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var img = new Image();
+    img.onload = function() {
+      _calibClicks = [];
+      var wrap   = document.getElementById('calibCanvasWrap');
+      var canvas = document.getElementById('calibCanvas');
+      wrap.style.display = 'block';
+
+      var maxW  = Math.min(800, img.naturalWidth);
+      _calibScale   = maxW / img.naturalWidth;
+      canvas.width  = Math.round(img.naturalWidth  * _calibScale);
+      canvas.height = Math.round(img.naturalHeight * _calibScale);
+
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      document.getElementById('calibResult').style.display = 'none';
+      document.getElementById('calibStatus').textContent =
+        'Step 1 of 2 — click the TOP-LEFT corner of the first inventory slot.';
+      document.getElementById('calibStatus').style.color = 'var(--text-muted)';
+      canvas.onclick = onCalibClick;
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+}
+
+function onCalibClick(e) {
+  var canvas = document.getElementById('calibCanvas');
+  var rect   = canvas.getBoundingClientRect();
+  var x = (e.clientX - rect.left) * (canvas.width  / rect.width)  / _calibScale;
+  var y = (e.clientY - rect.top)  * (canvas.height / rect.height) / _calibScale;
+  _calibClicks.push({ x: x, y: y });
+
+  var ctx  = canvas.getContext('2d');
+  var dotX = (e.clientX - rect.left) * (canvas.width  / rect.width);
+  var dotY = (e.clientY - rect.top)  * (canvas.height / rect.height);
+  ctx.beginPath();
+  ctx.arc(dotX, dotY, 7, 0, Math.PI * 2);
+  ctx.fillStyle   = '#f97316';
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth   = 2;
+  ctx.fill(); ctx.stroke();
+
+  if (_calibClicks.length === 1) {
+    document.getElementById('calibStatus').textContent =
+      'Step 2 of 2 — click the BOTTOM-RIGHT corner of the last inventory slot.';
+  }
+  if (_calibClicks.length === 2) {
+    canvas.onclick = null;
+    finishCalibration();
+  }
+}
+
+function finishCalibration() {
+  var tl   = _calibClicks[0], br = _calibClicks[1];
+  var cols = parseInt(prompt('How many COLUMNS does your inventory grid have?', '5'));
+  var rows = parseInt(prompt('How many ROWS does your inventory grid have?',    '5'));
+  if (!cols || !rows || cols < 1 || rows < 1) {
+    showToast('Invalid grid size — please try again.', true);
+    resetCalibration(); return;
+  }
+  calibration = {
+    originX: tl.x, originY: tl.y,
+    slotW: (br.x - tl.x) / cols,
+    slotH: (br.y - tl.y) / rows,
+    cols: cols, rows: rows
+  };
+  saveLS(LS_CALIB, calibration);
+  updateCalibStatus();
+  var res = document.getElementById('calibResult');
+  res.style.display = 'block';
+  res.style.color   = 'var(--pill-green-text)';
+  res.textContent   = 'Saved: ' + cols + 'x' + rows + ' grid, slot ' +
+    Math.round(calibration.slotW) + 'x' + Math.round(calibration.slotH) + 'px, origin (' +
+    Math.round(tl.x) + ', ' + Math.round(tl.y) + ').';
+  showToast('Calibration saved!');
+}
+
+function resetCalibration() {
+  calibration = null; _calibClicks = [];
+  saveLS(LS_CALIB, null);
+  document.getElementById('calibCanvasWrap').style.display = 'none';
+  document.getElementById('calibResult').style.display     = 'none';
+  updateCalibStatus();
+  showToast('Calibration reset.');
+}
+
+function updateCalibStatus() {
+  var el = document.getElementById('calibStatus');
+  if (!el) return;
+  if (calibration) {
+    el.textContent = 'Calibrated: ' + calibration.cols + 'x' + calibration.rows + ' grid, slot ' +
+      Math.round(calibration.slotW) + 'x' + Math.round(calibration.slotH) + 'px.';
+    el.style.color = 'var(--pill-green-text)';
+  } else {
+    el.textContent = 'Not calibrated. Load a screenshot above to begin.';
+    el.style.color = 'var(--text-muted)';
+  }
+}
+
+// ── SHARED DOWNLOAD HELPER ───────────────────────
+function _downloadJSON(obj, filename) {
+  var blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ═══════════════════════════════════════════════════
+// ← END OF PART 2 — paste Part 3 directly below
+// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
+// PART 3 — screenshot pipeline / sprite capture /
+//           OCR / debug tools
+// ═══════════════════════════════════════════════════
+
+// ── MODAL OPEN / CLOSE ───────────────────────────
+function openImportModal() {
+  document.getElementById('importModal').classList.add('open');
+}
+
+function closeImportModal() {
+  var btn = document.getElementById('applyInvBtn');
+  btn._captureMode = false;
+  btn._captureData = null;
+  btn.textContent  = '✅ Apply to Inventory';
+  document.getElementById('importModal').classList.remove('open');
+  document.getElementById('previewContainer').innerHTML = '';
+  document.getElementById('applyInvBtn').style.display  = 'none';
+  document.getElementById('screenshotInput').value      = '';
+  _detectedInventory = {};
+}
+
+// ── SCREENSHOT IMPORT PIPELINE ───────────────────
+function processScreenshots(e) {
+  var files = Array.from(e.target.files);
+  if (!files.length) return;
+
+  if (!calibration) {
+    showToast('Calibrate your grid first (Setup → Grid Calibration).', true); return;
+  }
+  if (!Object.keys(sprites).length) {
+    showToast('Capture sprites first (Setup → Sprite Library).', true); return;
+  }
+
+  document.getElementById('previewContainer').innerHTML =
+    '<div style="font-size:0.82rem;color:var(--text-muted);padding:0.5rem 0;">Processing…</div>';
+  document.getElementById('applyInvBtn').style.display = 'none';
+
+  _detectedInventory = {};
+  var allCells = [];
+  var remaining = files.length;
+
+  files.forEach(function(file) {
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      var img = new Image();
+      img.onload = function() {
+		_lastScreenshotImg = img;
+        var cells = _detectSlots(img);
+        allCells = allCells.concat(cells);
+        remaining--;
+        if (remaining === 0) _renderPreview(allCells);
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// ── SLOT DETECTION ───────────────────────────────
+function _detectSlots(img) {
+  var cal   = calibration;
+  var cells = [];
+
+  var full  = document.createElement('canvas');
+  full.width  = img.naturalWidth;
+  full.height = img.naturalHeight;
+  full.getContext('2d').drawImage(img, 0, 0);
+
+  for (var r = 0; r < cal.rows; r++) {
+    for (var c = 0; c < cal.cols; c++) {
+      var x = Math.round(cal.originX + c * cal.slotW);
+      var y = Math.round(cal.originY + r * cal.slotH);
+      var w = Math.round(cal.slotW);
+      var h = Math.round(cal.slotH);
+
+      var slot    = document.createElement('canvas');
+      slot.width  = w;
+      slot.height = h;
+      slot.getContext('2d').drawImage(full, x, y, w, h, 0, 0, w, h);
+
+      if (_isSlotEmpty(slot.getContext('2d'), w, h)) continue;
+
+      // Icon: inset 8% on all sides, top 70% of slot height
+      var inset  = Math.round(w * 0.08);
+      var iconW  = w - inset * 2;
+      var iconH  = Math.round(h * 0.70);
+      var iconCanvas = document.createElement('canvas');
+      iconCanvas.width  = 48;
+      iconCanvas.height = 48;
+      iconCanvas.getContext('2d').drawImage(slot, inset, inset, iconW, iconH, 0, 0, 48, 48);
+
+      // Text: bottom 35% of slot, shifted down to catch baseline
+      var textH  = Math.round(h * 0.35);
+      var textY  = Math.round(h * 0.65);
+      var textCanvas = document.createElement('canvas');
+      textCanvas.width  = w;
+      textCanvas.height = textH;
+      textCanvas.getContext('2d').drawImage(slot, 0, textY, w, textH, 0, 0, w, textH);
+
+      var qty   = _ocrQty(textCanvas);
+      var match = _matchSprite(iconCanvas);
+
+      if (match.name && match.conf > 0.50) {
+        _detectedInventory[match.name] = qty;
+      }
+
+      cells.push({
+        iconCanvas : iconCanvas,
+        name       : match.name,
+        conf       : match.conf,
+        qty        : qty
+      });
+    }
+  }
+  return cells;
+}
+
+// ── EMPTY SLOT CHECK ─────────────────────────────
+function _isSlotEmpty(ctx, w, h) {
+  var sx  = Math.round(w * 0.25);
+  var sy  = Math.round(h * 0.25);
+  var sw  = Math.round(w * 0.50);
+  var sh  = Math.round(h * 0.50);
+  var dat = ctx.getImageData(sx, sy, sw, sh).data;
+  var sum = 0, sumSq = 0, n = dat.length / 4;
+  for (var i = 0; i < dat.length; i += 4) {
+    var v = (dat[i] + dat[i+1] + dat[i+2]) / 3;
+    sum += v; sumSq += v * v;
+  }
+  var mean = sum / n;
+  return (sumSq / n - mean * mean) < 150;
+}
+
+// ── SPRITE MATCHING ──────────────────────────────
+function _matchSprite(iconCanvas) {
+  var names = Object.keys(sprites);
+  if (!names.length) return { name: null, conf: 0 };
+
+  var iconData = iconCanvas.getContext('2d').getImageData(0, 0, 48, 48).data;
+  var bestName = null, bestMSE = Infinity;
+
+  for (var i = 0; i < names.length; i++) {
+    var name = names[i];
+    var spr  = document.createElement('canvas');
+    spr.width = spr.height = 48;
+    var sImg = new Image();
+    sImg.src = sprites[name];
+    spr.getContext('2d').drawImage(sImg, 0, 0, 48, 48);
+    var sprData = spr.getContext('2d').getImageData(0, 0, 48, 48).data;
+
+    var mse = 0;
+    for (var p = 0; p < iconData.length; p += 4) {
+      var dr = iconData[p]   - sprData[p];
+      var dg = iconData[p+1] - sprData[p+1];
+      var db = iconData[p+2] - sprData[p+2];
+      mse += (dr*dr + dg*dg + db*db) / 3;
+    }
+    mse /= (48 * 48);
+    if (mse < bestMSE) { bestMSE = mse; bestName = name; }
+  }
+
+  var conf = Math.max(0, 1 - bestMSE / 3000);
+  return { name: bestName, conf: conf };
+}
+
+// ── OCR ──────────────────────────────────────────
+function _ocrQty(textCanvas) {
+  var w = textCanvas.width;
+  var h = textCanvas.height;
+
+  var scaled = document.createElement('canvas');
+  scaled.width  = w * 4;
+  scaled.height = h * 4;
+  var sCtx = scaled.getContext('2d');
+  sCtx.imageSmoothingEnabled = false;
+  sCtx.drawImage(textCanvas, 0, 0, w * 4, h * 4);
+
+  var sw  = scaled.width;
+  var sh  = scaled.height;
+  var dat = sCtx.getImageData(0, 0, sw, sh).data;
+
+  // Two thresholds: strict for finding character cores,
+  // loose for bounding box detection
+  var coreThreshold  = 180;
+  var looseThreshold = 100;
+
+  // Find bounding box using loose threshold
+  var minX = sw, maxX = 0, minY = sh, maxY = 0;
+  for (var y = 0; y < sh; y++) {
+    for (var x = 0; x < sw; x++) {
+      var idx    = (y * sw + x) * 4;
+      var bright = (dat[idx] + dat[idx+1] + dat[idx+2]) / 3;
+      if (bright > looseThreshold) {
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      }
+    }
+  }
+
+  if (maxX <= minX) return 0;
+
+  // Column sums using CORE threshold to ignore outline pixels
+  var textW   = maxX - minX + 1;
+  var colSums = new Array(textW).fill(0);
+  for (var y = minY; y <= maxY; y++) {
+    for (var x = minX; x <= maxX; x++) {
+      var idx    = (y * sw + x) * 4;
+      var bright = (dat[idx] + dat[idx+1] + dat[idx+2]) / 3;
+      if (bright > coreThreshold) colSums[x - minX]++;
+    }
+  }
+
+  // Segment characters — generous gap tolerance for outlined fonts
+  var segs         = [];
+  var inSeg        = false;
+  var segStart     = 0;
+  var gapTolerance = 5;
+  var gapCount     = 0;
+
+  for (var x = 0; x < textW; x++) {
+    if (!inSeg) {
+      if (colSums[x] > 0) { inSeg = true; segStart = x; gapCount = 0; }
+    } else {
+      if (colSums[x] === 0) {
+        gapCount++;
+        if (gapCount > gapTolerance) {
+          inSeg = false;
+          segs.push([segStart, x - gapCount]);
+        }
+      } else {
+        gapCount = 0;
+      }
+    }
+  }
+  if (inSeg) segs.push([segStart, textW - 1]);
+  if (!segs.length) return 0;
+
+  var chars = segs.map(function(seg) {
+    return _classifyChar(dat, sw, minY, maxY, minX + seg[0], minX + seg[1]);
+  });
+
+  return _parseQty(chars.join(''));
+}
+
+
+function _classifyChar(dat, imgW, minY, maxY, x0, x1) {
+  var segW = x1 - x0 + 1;
+  var segH = maxY - minY + 1;
+  if (segW <= 0 || segH <= 0) return '';
+  if (segW <= 2) return '.';
+
+  // Aspect ratio shortcuts
+  if (segW > segH * 1.1) return 'K';
+  if (segW < segH * 0.28) return '1';
+
+  // Build 4×4 zone grid for finer resolution
+  var zones = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+  var total = 0;
+  var qW = segW / 4;
+  var qH = segH / 4;
+
+  for (var x = x0; x <= x1; x++) {
+    for (var y = minY; y <= maxY; y++) {
+      var idx    = (y * imgW + x) * 4;
+      var bright = (dat[idx] + dat[idx+1] + dat[idx+2]) / 3;
+      if (bright > 180) {
+        var col = Math.min(3, Math.floor((x - x0) / qW));
+        var row = Math.min(3, Math.floor((y - minY) / qH));
+        zones[row][col]++;
+        total++;
+      }
+    }
+  }
+
+  if (!total) return '';
+
+  for (var r = 0; r < 4; r++)
+    for (var c = 0; c < 4; c++)
+      zones[r][c] /= total;
+
+  // Aggregate bands
+  var topHalf = zones[0][0]+zones[0][1]+zones[0][2]+zones[0][3]+
+                zones[1][0]+zones[1][1]+zones[1][2]+zones[1][3];
+  var botHalf = zones[2][0]+zones[2][1]+zones[2][2]+zones[2][3]+
+                zones[3][0]+zones[3][1]+zones[3][2]+zones[3][3];
+  var lftHalf = zones[0][0]+zones[1][0]+zones[2][0]+zones[3][0]+
+                zones[0][1]+zones[1][1]+zones[2][1]+zones[3][1];
+  var rgtHalf = zones[0][2]+zones[1][2]+zones[2][2]+zones[3][2]+
+                zones[0][3]+zones[1][3]+zones[2][3]+zones[3][3];
+
+  var topRow  = zones[0][0]+zones[0][1]+zones[0][2]+zones[0][3];
+  var botRow  = zones[3][0]+zones[3][1]+zones[3][2]+zones[3][3];
+  var midRows = zones[1][0]+zones[1][1]+zones[1][2]+zones[1][3]+
+                zones[2][0]+zones[2][1]+zones[2][2]+zones[2][3];
+
+  var topLft = zones[0][0]+zones[0][1]+zones[1][0]+zones[1][1];
+  var topRgt = zones[0][2]+zones[0][3]+zones[1][2]+zones[1][3];
+  var botLft = zones[2][0]+zones[2][1]+zones[3][0]+zones[3][1];
+  var botRgt = zones[2][2]+zones[2][3]+zones[3][2]+zones[3][3];
+
+  var centre  = zones[1][1]+zones[1][2]+zones[2][1]+zones[2][2];
+
+  // 1: very right-heavy
+  if (rgtHalf > 0.70) return '1';
+
+  // 7: strong top row, right bias, very weak bottom-left
+  if (topRow > 0.30 && rgtHalf > lftHalf && botLft < 0.04) return '7';
+
+  // 0: strong border, weak centre
+  if (centre < 0.08 && topRow > 0.15 && botRow > 0.15 && lftHalf > 0.15 && rgtHalf > 0.15) return '0';
+
+  // 4: top-left + top-right + right side, weak bottom-left
+  if (topLft > 0.08 && topRgt > 0.08 && botLft < 0.06 && rgtHalf > lftHalf) return '4';
+
+  // 2: top-right heavy, bottom-left heavy, weak top-left
+  if (topRgt > topLft * 1.5 && botLft > botRgt * 1.5) return '2';
+
+  // 3: right-heavy throughout, mid bar present
+  if (rgtHalf > lftHalf * 1.8 && midRows > 0.3) return '3';
+
+  // 5: top-left heavy, bottom-right heavy, weak top-right
+  if (topLft > topRgt * 1.5 && botRgt > botLft * 1.5) return '5';
+
+  // 6: left-heavy, full bottom, hollow top-right
+  if (lftHalf > rgtHalf * 1.4 && botHalf > topHalf && topRgt < 0.05) return '6';
+
+  // 9: full top, right-biased bottom, hollow bottom-left
+  if (topHalf > botHalf && rgtHalf > lftHalf && botLft < 0.05) return '9';
+
+  // 8: balanced all quadrants
+  if (Math.abs(topLft - topRgt) < 0.06 &&
+      Math.abs(botLft - botRgt) < 0.06 &&
+      Math.abs(topHalf - botHalf) < 0.08) return '8';
+
+  // fallback
+  if (lftHalf > rgtHalf * 1.3) return '6';
+  if (rgtHalf > lftHalf * 1.3) return '3';
+  return '8';
+}
+
+
+
+
+
+function _parseQty(raw) {
+  var s    = raw.trim().toUpperCase();
+  if (!s) return 0;
+  var kIdx = s.indexOf('K');
+  if (kIdx !== -1) {
+    var num = parseFloat(s.substring(0, kIdx));
+    return isNaN(num) ? 0 : Math.round(num * 1000);
+  }
+  var mIdx = s.indexOf('M');
+  if (mIdx !== -1) {
+    var num = parseFloat(s.substring(0, mIdx));
+    return isNaN(num) ? 0 : Math.round(num * 1000000);
+  }
+  var n = parseInt(s.replace(/[^0-9]/g, ''), 10);
+  return isNaN(n) ? 0 : n;
+}
+
+// ── PREVIEW RENDER ───────────────────────────────
+function _renderPreview(cells) {
+  var container = document.getElementById('previewContainer');
+  if (!cells.length) {
+    container.innerHTML =
+      '<div style="font-size:0.82rem;color:var(--text-muted);">No occupied slots detected — check your calibration.</div>';
+    return;
+  }
+
+  var html = '<div class="preview-grid">';
+  cells.forEach(function(cell, i) {
+    var known = cell.name && cell.conf > 0.50;
+    var cls   = known ? '' : ' unknown';
+    var label = known ? cell.name : '❓ Unknown';
+    var conf  = known
+      ? '<div style="font-size:0.62rem;color:var(--text-muted);">' + Math.round(cell.conf * 100) + '% match</div>'
+      : '';
+    html +=
+      '<div class="preview-cell' + cls + '">' +
+        '<canvas id="pc' + i + '" width="48" height="48"></canvas>' +
+        '<div class="p-name">' + label + '</div>' +
+        conf +
+        '<div class="p-qty">' + (cell.qty > 0 ? cell.qty.toLocaleString() : '—') + '</div>' +
+      '</div>';
+  });
+  html += '</div>';
+  container.innerHTML = html;
+
+  cells.forEach(function(cell, i) {
+    var dest = document.getElementById('pc' + i);
+    if (dest) dest.getContext('2d').drawImage(cell.iconCanvas, 0, 0, 48, 48);
+  });
+
+  document.getElementById('applyInvBtn').style.display = 'inline-flex';
+}
+
+// ── APPLY DETECTED INVENTORY ─────────────────────
+function applyDetectedInventory() {
+  var btn = document.getElementById('applyInvBtn');
+
+  // Sprite capture mode
+  if (btn._captureMode) {
+    var captured = btn._captureData || [];
+    var saved    = 0;
+    captured.forEach(function(item) {
+      if (item.name && item.dataURL) {
+        sprites[item.name] = item.dataURL;
+        saved++;
+      }
+    });
+    if (saved > 0) {
+      saveLS(LS_SPRITES, sprites);
+      renderSpriteGrid();
+      showToast(saved + ' sprite(s) saved from screenshot!');
+    } else {
+      showToast('No items were assigned a name.', true);
+    }
+    btn._captureMode = false;
+    btn._captureData = null;
+    btn.textContent  = '✅ Apply to Inventory';
+    closeImportModal();
+    return;
+  }
+
+  // Normal inventory import mode
+  if (!Object.keys(_detectedInventory).length) {
+    showToast('No items were recognized.', true); return;
+  }
+  for (var name in _detectedInventory) {
+    var qty = _detectedInventory[name];
+    if (qty > 0) inventory[name] = qty; else delete inventory[name];
+  }
+  saveLS(LS_INVENT, inventory);
+  closeImportModal();
+  liveRecalc();
+  showToast('Inventory updated: ' + Object.keys(_detectedInventory).length + ' item(s) imported.');
+}
+
+// ── SPRITE CAPTURE FROM SCREENSHOT ───────────────
+function beginCaptureSprites(e) {
+  var file = e.target.files[0]; if (!file) return;
+  if (!calibration) { showToast('Calibrate your grid first.', true); return; }
+
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var img = new Image();
+    img.onload = function() {
+      var cal  = calibration;
+      var full = document.createElement('canvas');
+      full.width  = img.naturalWidth;
+      full.height = img.naturalHeight;
+      full.getContext('2d').drawImage(img, 0, 0);
+
+      var modal = document.getElementById('importModal');
+      modal.classList.add('open');
+
+      var container = document.getElementById('previewContainer');
+      container.innerHTML =
+        '<div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.7rem;">' +
+        'Assign an item name to each slot you want to save as a sprite, then click Save Sprites.' +
+        '</div><div class="preview-grid" id="captureGrid"></div>';
+
+      var grid     = document.getElementById('captureGrid');
+      var captured = [];
+
+      for (var r = 0; r < cal.rows; r++) {
+        for (var c = 0; c < cal.cols; c++) {
+          var x = Math.round(cal.originX + c * cal.slotW);
+          var y = Math.round(cal.originY + r * cal.slotH);
+          var w = Math.round(cal.slotW);
+          var h = Math.round(cal.slotH);
+
+          var slot = document.createElement('canvas');
+          slot.width = w; slot.height = h;
+          slot.getContext('2d').drawImage(full, x, y, w, h, 0, 0, w, h);
+
+          if (_isSlotEmpty(slot.getContext('2d'), w, h)) continue;
+
+          // Same icon crop as _detectSlots
+          var inset  = Math.round(w * 0.08);
+          var iconW  = w - inset * 2;
+          var iconH  = Math.round(h * 0.70);
+          var iconCanvas = document.createElement('canvas');
+          iconCanvas.width  = 48;
+          iconCanvas.height = 48;
+          iconCanvas.getContext('2d').drawImage(slot, inset, inset, iconW, iconH, 0, 0, 48, 48);
+
+          var dataURL = iconCanvas.toDataURL('image/png');
+          var idx     = captured.length;
+          captured.push({ dataURL: dataURL, name: '' });
+
+          var cell    = document.createElement('div');
+          cell.className = 'preview-cell';
+
+          var cv = document.createElement('canvas');
+          cv.width = cv.height = 48;
+          cv.style.cssText = 'width:48px;height:48px;display:block;margin:0 auto 0.3rem;image-rendering:pixelated;';
+          cv.getContext('2d').drawImage(iconCanvas, 0, 0);
+
+          var sel = document.createElement('select');
+                    // Build full item name list: recipes + all ingredients
+          var allNames = {};
+          Object.keys(recipes).forEach(function(n) { allNames[n] = true; });
+          Object.keys(recipes).forEach(function(n) {
+            recipes[n].ingredients.forEach(function(i) { allNames[i.name] = true; });
+          });
+          var sortedNames = Object.keys(allNames).sort();
+
+          sel.innerHTML = '<option value="">— skip —</option>' +
+            '<option value="__custom__">✏️ Type a name…</option>' +
+            sortedNames.map(function(n) {
+              return '<option value="' + n + '">' + n + '</option>';
+            }).join('');
+
+          // Closure to capture correct index
+          (function(captureIdx, selectEl, parentCell) {
+  selectEl.onchange = function() {
+    if (selectEl.value === '__custom__') {
+      var existing = parentCell.querySelector('.custom-name-input');
+      if (!existing) {
+        var inp = document.createElement('input');
+        inp.type        = 'text';
+        inp.placeholder = 'Item name…';
+        inp.className   = 'custom-name-input';
+        inp.style.cssText = 'width:100%;font-size:0.7rem;border-radius:6px;padding:0.2rem 0.4rem;margin-top:0.3rem;background:var(--input-bg);color:var(--text-main);border:1px solid var(--input-border);box-sizing:border-box;';
+        inp.oninput = function() {
+          captured[captureIdx].name = toTitleCase(inp.value.trim());
+        };
+        parentCell.appendChild(inp);
+        inp.focus();
+      }
+      captured[captureIdx].name = '';
+    } else {
+      var old = parentCell.querySelector('.custom-name-input');
+      if (old) old.remove();
+      captured[captureIdx].name = selectEl.value;
+    }
+  };
+})(idx, sel, cell);
+
+          cell.appendChild(cv);
+          cell.appendChild(sel);
+          grid.appendChild(cell);
+        }
+      }
+
+      var applyBtn = document.getElementById('applyInvBtn');
+      applyBtn.style.display = 'inline-flex';
+      applyBtn.textContent   = '💾 Save Sprites';
+      applyBtn._captureMode  = true;
+      applyBtn._captureData  = captured;
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+}
+
+// ═══════════════════════════════════════════════════
+// DEBUG TOOLS — comment out this entire block
+// when image recognition is working correctly
+// ═══════════════════════════════════════════════════
+function debugCrop() {
+  if (!calibration) { showToast('Calibrate first.', true); return; }
+  if (!_lastScreenshotImg) { showToast('Process a screenshot first.', true); return; }
+
+  var img  = _lastScreenshotImg;
+  var cal  = calibration;
+  var full = document.createElement('canvas');
+  full.width  = img.naturalWidth;
+  full.height = img.naturalHeight;
+  full.getContext('2d').drawImage(img, 0, 0);
+
+  var x = Math.round(cal.originX);
+  var y = Math.round(cal.originY);
+  var w = Math.round(cal.slotW);
+  var h = Math.round(cal.slotH);
+
+  var slot = document.createElement('canvas');
+  slot.width = w; slot.height = h;
+  slot.getContext('2d').drawImage(full, x, y, w, h, 0, 0, w, h);
+
+  var inset  = Math.round(w * 0.08);
+  var iconW  = w - inset * 2;
+  var iconH  = Math.round(h * 0.70);
+  var iconCanvas = document.createElement('canvas');
+  iconCanvas.width  = 48;
+  iconCanvas.height = 48;
+  iconCanvas.getContext('2d').drawImage(slot, inset, inset, iconW, iconH, 0, 0, 48, 48);
+
+  var textH  = Math.round(h * 0.35);
+  var textY  = Math.round(h * 0.65);
+  var textCanvas = document.createElement('canvas');
+  textCanvas.width  = w;
+  textCanvas.height = textH;
+  textCanvas.getContext('2d').drawImage(slot, 0, textY, w, textH, 0, 0, w, textH);
+
+  var dbg = document.getElementById('previewContainer');
+  dbg.innerHTML =
+    '<div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.5rem;">' +
+    'Debug: slot (blue) | icon 48x48 (green) | text region 3x (orange) | sprite (yellow)' +
+    '</div>';
+
+  slot.style.cssText = 'border:2px solid #6366f1;border-radius:6px;margin-right:8px;display:inline-block;vertical-align:top;';
+  dbg.appendChild(slot);
+
+  var iconBig = document.createElement('canvas');
+  iconBig.width = iconBig.height = 96;
+  iconBig.getContext('2d').drawImage(iconCanvas, 0, 0, 96, 96);
+  iconBig.style.cssText = 'border:2px solid #16a34a;border-radius:6px;margin-right:8px;display:inline-block;vertical-align:top;image-rendering:pixelated;';
+  dbg.appendChild(iconBig);
+
+  var textBig = document.createElement('canvas');
+  textBig.width  = w * 3;
+  textBig.height = textH * 3;
+  var tCtx = textBig.getContext('2d');
+  tCtx.imageSmoothingEnabled = false;
+  tCtx.drawImage(textCanvas, 0, 0, w * 3, textH * 3);
+  textBig.style.cssText = 'border:2px solid #f97316;border-radius:6px;display:block;margin-top:8px;';
+  dbg.appendChild(textBig);
+
+  var sprNames = Object.keys(sprites);
+  if (sprNames.length > 0) {
+    var sprImg = new Image();
+    sprImg.onload = function() {
+      var sprCanvas = document.createElement('canvas');
+      sprCanvas.width = sprCanvas.height = 96;
+      sprCanvas.getContext('2d').drawImage(sprImg, 0, 0, 96, 96);
+      sprCanvas.style.cssText = 'border:2px solid #fde047;border-radius:6px;margin-left:8px;display:inline-block;vertical-align:top;image-rendering:pixelated;';
+      dbg.appendChild(sprCanvas);
+      var lbl = document.createElement('div');
+      lbl.style.cssText = 'font-size:0.72rem;color:var(--text-muted);margin-top:4px;';
+      lbl.textContent = 'First sprite: "' + sprNames[0] + '" (yellow)';
+      dbg.appendChild(lbl);
+    };
+    sprImg.src = sprites[sprNames[0]];
+  }
+
+  var qty = _ocrQty(textCanvas);
+
+  // Extra: show each digit segment found
+  var scaled = document.createElement('canvas');
+  scaled.width  = w * 3;
+  scaled.height = textH * 3;
+  var sCtx = scaled.getContext('2d');
+  sCtx.imageSmoothingEnabled = false;
+  sCtx.drawImage(textCanvas, 0, 0, w * 3, textH * 3);
+  var sw  = scaled.width;
+  var sh  = scaled.height;
+  var dat = sCtx.getImageData(0, 0, sw, sh).data;
+
+  var brightThreshold = 120;
+  var minX = sw, maxX = 0, minY = sh, maxY = 0;
+  for (var py = 0; py < sh; py++) {
+    for (var px = 0; px < sw; px++) {
+      var pidx   = (py * sw + px) * 4;
+      var bright = (dat[pidx] + dat[pidx+1] + dat[pidx+2]) / 3;
+      if (bright > brightThreshold && dat[pidx] > 80) {
+        if (px < minX) minX = px;
+        if (px > maxX) maxX = px;
+        if (py < minY) minY = py;
+        if (py > maxY) maxY = py;
+      }
+    }
+  }
+
+  var segInfo = document.createElement('div');
+  segInfo.style.cssText = 'font-size:0.72rem;color:var(--text-muted);margin-top:8px;font-family:monospace;';
+  segInfo.textContent = 'Slot: ' + w + 'x' + h + 'px | OCR result: "' + qty + '"' +
+    ' | Bright bounds: x(' + minX + '-' + maxX + ') y(' + minY + '-' + maxY + ')' +
+    ' | Origin: (' + Math.round(cal.originX) + ', ' + Math.round(cal.originY) + ')';
+  dbg.appendChild(segInfo);
+}
+// ═══════════════════════════════════════════════════
+// END DEBUG TOOLS
+// ═══════════════════════════════════════════════════
+
+</script>
 </body>
 </html>
