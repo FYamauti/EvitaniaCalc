@@ -20,7 +20,7 @@
           <span id="themeIcon">🌙</span><span id="themeLabel">Dark Mode</span>
         </button>
         <div class="meta-block">
-          <div class="header-version">v 0.8</div>
+          <div class="header-version">v 1.0.0</div>
           <div class="header-author">Developed by Yama · <a href="mailto:yamauti@gmail.com">yamauti@gmail.com</a></div>
         </div>
       </div>
@@ -46,11 +46,56 @@
             <button class="btn btn-outline btn-sm" onclick="clearCraftList()">🗑 Clear List</button>
           </div>
         </div>
-        <div class="calc-row">
-          <select id="craftItemSelect"><option value="">— Select An Item —</option></select>
-          <input type="number" id="craftQty" min="1" value="1" />
-          <button class="btn btn-primary btn-sm" onclick="addToCraftList()">+ Add</button>
+
+        <div class="category-selects">
+
+          <div class="category-row">
+            <span class="category-label">⚔️ Act 1</span>
+            <div class="calc-row">
+              <select id="craftItemSelect_Act_1"><option value="">— Select an item —</option></select>
+              <input type="number" class="craft-qty-input" id="craftQty_Act_1" min="1" value="1" />
+              <button class="btn btn-primary btn-sm" onclick="addToCraftList('Act 1')">+ Add</button>
+            </div>
+          </div>
+
+          <div class="category-row">
+            <span class="category-label">⚔️ Act 2</span>
+            <div class="calc-row">
+              <select id="craftItemSelect_Act_2"><option value="">— Select an item —</option></select>
+              <input type="number" class="craft-qty-input" id="craftQty_Act_2" min="1" value="1" />
+              <button class="btn btn-primary btn-sm" onclick="addToCraftList('Act 2')">+ Add</button>
+            </div>
+          </div>
+
+          <div class="category-row">
+            <span class="category-label">⚔️ Act 3</span>
+            <div class="calc-row">
+              <select id="craftItemSelect_Act_3"><option value="">— Select an item —</option></select>
+              <input type="number" class="craft-qty-input" id="craftQty_Act_3" min="1" value="1" />
+              <button class="btn btn-primary btn-sm" onclick="addToCraftList('Act 3')">+ Add</button>
+            </div>
+          </div>
+
+          <div class="category-row">
+            <span class="category-label">💀 Hard</span>
+            <div class="calc-row">
+              <select id="craftItemSelect_Hard"><option value="">— Select an item —</option></select>
+              <input type="number" class="craft-qty-input" id="craftQty_Hard" min="1" value="1" />
+              <button class="btn btn-primary btn-sm" onclick="addToCraftList('Hard')">+ Add</button>
+            </div>
+          </div>
+
+          <div class="category-row">
+            <span class="category-label">🔥 Smeltery</span>
+            <div class="calc-row">
+              <select id="craftItemSelect_Smeltery"><option value="">— Select an item —</option></select>
+              <input type="number" class="craft-qty-input" id="craftQty_Smeltery" min="1" value="1" />
+              <button class="btn btn-primary btn-sm" onclick="addToCraftList('Smeltery')">+ Add</button>
+            </div>
+          </div>
+
         </div>
+
         <div class="craft-list" id="craftList"></div>
       </div>
 
@@ -58,14 +103,22 @@
         <div class="card-header">
           <div>
             <div class="card-title">✅ Required Ingredients</div>
-            <div class="card-subtitle">Enter amounts you already own — the full crafting tree recalculates live.</div>
+            <div class="card-subtitle">Enter amounts in the Combined view — By Item updates live.</div>
           </div>
           <div class="card-actions">
+            <div class="view-toggle">
+              <button class="view-toggle-btn active" id="toggleCombined" onclick="switchResultView('combined')">Combined</button>
+              <button class="view-toggle-btn"        id="toggleByItem"   onclick="switchResultView('byitem')">By Item</button>
+            </div>
             <button class="btn btn-ghost btn-sm" onclick="copyNeededToClipboard()">📋 Copy Needed</button>
             <button class="btn btn-ghost btn-sm" id="clearInvBtn" style="display:none;" onclick="clearInventory()">🗑 Clear Inventory</button>
           </div>
         </div>
-        <div id="resultContent"></div>
+        <div id="resultCombined"></div>
+        <div id="resultByItem" style="display:none;">
+          <p class="by-item-disclaimer">💡 Items are consumed top to bottom. Add them in the order you plan to craft.</p>
+          <div id="byItemContent"></div>
+        </div>
       </div>
 
     </section>
@@ -93,10 +146,23 @@
           <button class="btn-ghost" id="addRecipeToggle">▲ Collapse</button>
         </div>
         <div class="collapsible-body" id="addRecipeBody">
-          <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; margin-bottom:0.2rem;">
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; margin-bottom:0.5rem;">
             <input type="text" id="recipeName" placeholder="Item name" style="flex:1; min-width:200px; border-radius:10px;" />
             <input type="number" id="recipeYields" min="1" value="1" style="width:90px;" />
             <span style="font-size:0.78rem; color:var(--text-muted); white-space:nowrap;">unit(s) per craft</span>
+          </div>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; margin-bottom:0.5rem;">
+            <label style="font-size:0.78rem; font-weight:600; color:var(--text-soft); white-space:nowrap;">Category:</label>
+            <select id="recipeCategory" style="flex:1; min-width:160px;">
+              <option value="Act 1">⚔️ Act 1</option>
+              <option value="Act 2">⚔️ Act 2</option>
+              <option value="Act 3">⚔️ Act 3</option>
+              <option value="Hard">💀 Hard</option>
+              <option value="Smeltery">🔥 Smeltery</option>
+              <option value="__new__">＋ New category…</option>
+            </select>
+            <input type="text" id="recipeCategoryNew" placeholder="New category name"
+              style="flex:1; min-width:160px; display:none;" />
           </div>
           <div class="ingredients-builder" id="ingredientsBuilder">
             <div class="ingredient-row">
@@ -132,7 +198,7 @@
           </div>
           <hr class="divider" />
           <div style="font-size:0.78rem; color:var(--text-muted); margin-bottom:0.35rem;">Or paste JSON:</div>
-          <textarea id="jsonPasteArea" rows="3" placeholder='{"Thorium Boots":{"yields":1,"ingredients":[...]}}'></textarea>
+          <textarea id="jsonPasteArea" rows="3" placeholder='{"Item Name":{"yields":1,"ingredients":[...]}}'></textarea>
           <div style="margin-top:0.4rem;">
             <button class="btn btn-warning btn-sm" onclick="importFromPaste()">⬆ Load Pasted JSON</button>
           </div>
